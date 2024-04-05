@@ -110,9 +110,7 @@ function createCard(id, image, title, description, price) {
 };
 
 
-// Funktion för att lägga till fler "card" divar
 function addCards(path) {
-
     const cardsGroup = $("#cardsRow");
 
     fetch(path)
@@ -125,12 +123,10 @@ function addCards(path) {
                 const title = data.title;
                 const description = data.description;
                 const price = data.price;
-                // Skapa ett nytt "card" div-element och lägg till det i raden
+            
                 const cardHTML = createCard(id, img, title, description, price);
                 cardsGroup.append(cardHTML);
-
             });
-
         })
         .catch(error => console.error("Error fetching random product:", error));
 };

@@ -13,7 +13,7 @@ async function addProducts() {
     let fetchPromises = [];
 
     for (let key in idOccurrences) {
-    
+
         let amount = idOccurrences[key];
 
         let fetchPromise = fetch(`https://fakestoreapi.com/products/${key}`)
@@ -30,21 +30,21 @@ async function addProducts() {
 
                 let newItem = {
                     id: id,
-                    price: price,
+                    price: price, 
                     quantity: amount
                 }
                 priceInfoList.push(newItem);
 
             })
             .catch(error => console.error("Error fetching product to cart:", error));
-            fetchPromises.push(fetchPromise);
+        fetchPromises.push(fetchPromise);
     }
 
     await Promise.all(fetchPromises)
-    .then(() => {
-        localStorage.setItem('priceInfoList', JSON.stringify(priceInfoList));
-        updateTotalPriceElement();
-    });
+        .then(() => {
+            localStorage.setItem('priceInfoList', JSON.stringify(priceInfoList));
+            updateTotalPriceElement();
+        });
 }
 
 function createProduct(id, image, title, price, amount) {
@@ -57,7 +57,7 @@ function createProduct(id, image, title, price, amount) {
         <h4>${title}</h4>
     </div>
     <div class="col-3">
-        <h5 id="totalPricePerProductType">$${price*amount}</h5>       
+        <h5 id="totalPricePerProductType">$${price * amount}</h5>       
     </div>
     <div class="col-3 amount-control d-flex align-items-center">
         <button class="btn decr-incr-btn" onclick="decreaseProductCount(${id}, this, ${price})">
@@ -80,7 +80,7 @@ function decreaseProductCount(id, button, priceForOne) {
         count--;
         countElement.textContent = count;
     }
-    updatePriceElement(id, count, priceForOne);    
+    updatePriceElement(id, count, priceForOne);
     decreaseIdFromList(id, button);
     updateTotalPriceElement();
 }
@@ -103,19 +103,18 @@ function updatePriceElement(id, count, priceForOne) {
     let priceElement = row.querySelector('#totalPricePerProductType');
 
     let price = parseFloat(priceForOne);
-    price = price*count;
+    price = price * count;
     priceElement.textContent = `$${price}`;
 
-    updatePriceList(id, price, count);
+    updatePriceList(id, count);
 }
 
 //Updates list that holds information about the price and amount for the products in the shopping cart. 
-function updatePriceList(id, newPrice, count) {
+function updatePriceList(id, count) {
     let priceInfoList = JSON.parse(localStorage.getItem('priceInfoList'));
 
     for (let i = 0; i < priceInfoList.length; i++) {
         if (priceInfoList[i].id === id) {
-            priceInfoList[i].price = newPrice;
             priceInfoList[i].quantity = count;
             break;
         }
@@ -137,6 +136,9 @@ function decreaseIdFromList(id, button) {
     if (idOccurrences[id] > 1) {
         idOccurrences[id]--;
     } else {
+        const confirmation = confirm("Vill du ta bort produkten från varukorgen?");
+        
+        if (confirmation) {
         // If equal to one, remove product from html and priceInfoList.  
         delete idOccurrences[id];
 
@@ -145,9 +147,10 @@ function decreaseIdFromList(id, button) {
         priceInfoList = priceInfoList.filter(item => item.id !== id);
         localStorage.setItem('priceInfoList', JSON.stringify(priceInfoList));
 
-        //Removev from HTML
+        //Remove from HTML
         let productRow = button.closest('.row');
-        removeProduct(productRow);
+        productRow.remove();
+        }
     }
     localStorage.setItem('idList', JSON.stringify(idOccurrences));
 }
@@ -164,13 +167,6 @@ function increaseIdInList(id) {
     localStorage.setItem('idList', JSON.stringify(idOccurrences));
 }
 
-function removeProduct(productRow) {
-    const confirmation = confirm("Vill du ta bort produkten från varukorgen?");
-    if (confirmation) {
-        productRow.remove();
-    }
-}
-
 function emptyCart() {
     localStorage.removeItem('idList');
     document.getElementById('productDisplay').innerHTML = '';
@@ -179,14 +175,13 @@ function emptyCart() {
     document.getElementById('totalPrice').textContent = 'Totalpris: $0';
 }
 
-
 function updateTotalPriceElement() {
     let priceInfoList = JSON.parse(localStorage.getItem('priceInfoList'));
     let totalPrice = 0;
     priceInfoList.forEach(data => {
         let quantity = data.quantity;
         let priceForOne = data.price
-        let total = quantity*priceForOne;
+        let total = quantity * priceForOne;
         totalPrice += total;
     });
 
