@@ -13,7 +13,6 @@ async function addProducts() {
     let fetchPromises = [];
 
     for (let key in idOccurrences) {
-
         let amount = idOccurrences[key];
 
         let fetchPromise = fetch(`https://fakestoreapi.com/products/${key}`)
@@ -34,7 +33,6 @@ async function addProducts() {
                     quantity: amount
                 }
                 priceInfoList.push(newItem);
-
             })
             .catch(error => console.error("Error fetching product to cart:", error));
         fetchPromises.push(fetchPromise);
