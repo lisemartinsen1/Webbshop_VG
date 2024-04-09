@@ -1,4 +1,4 @@
-# Webbshopp
+# Webbshop
 
 ## Github Pages https://lisemartinsen1.github.io/Webbshop_VG/
 
